@@ -4,7 +4,7 @@ import yfinance as yf
 tsla = yf.Ticker("TSLA")
 
 # Fetch historical market data for Tesla stock
-tsla_data = tsla.history(period="1y")
+tsla_data = tsla.history(period="max")
 
 # Display the downloaded data
 print(tsla_data.head())

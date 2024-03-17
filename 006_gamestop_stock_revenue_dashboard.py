@@ -1,21 +1,32 @@
 import yfinance as yf
-import requests
-from bs4 import BeautifulSoup
-import pandas as pd
-import io
-GME = yf.Ticker("GME")
-GME_data = GME.history(period="1y")
-print("Tesla Stock Data:")
-print(GME_data.head())
-revenue_url = 'https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0220EN-SkillsNetwork/labs/project/stock.html'
-response = requests.get(revenue_url)
-if response.status_code == 200:
-    soup = BeautifulSoup(response.text, 'html.parser')
-    revenue_table = soup.find('table')
-    # Convert revenue table to DataFrame
-    revenue_df = pd.read_html(io.StringIO(str(revenue_table)))[0]
-    # Display revenue data
-    print("\nRevenue Data:")
-    print(revenue_df)
-else:
-    print("Failed to fetch revenue data. Status code:", response.status_code)
+import matplotlib.pyplot as plt
+
+def make_graph(stock_data, revenue_data=None):
+    # Plot stock prices
+    plt.figure(figsize=(10, 5))
+    plt.plot(stock_data.index, stock_data['Close'], label='GameStop (GME)')
+    plt.xlabel('Date')
+    plt.ylabel('Closing Price (USD)')
+    plt.title('GameStop Stock Prices')  # Provide a title for the graph
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    # Plot revenue data if available
+    if revenue_data:
+        plt.figure(figsize=(8, 5))
+        plt.bar(revenue_data.keys(), revenue_data.values(), color='blue')
+        plt.xlabel('Quarter')
+        plt.ylabel('Revenue (USD)')
+        plt.title('GameStop Revenue')
+        plt.grid(axis='y')
+        plt.show()
+    else:
+        print("Revenue data not available.")
+
+# Fetch historical stock data for GameStop (GME)
+gme = yf.Ticker("GME")
+gme_data = gme.history(period="1y")
+
+# Use make_graph function to plot GameStop stock data
+make_graph(gme_data)

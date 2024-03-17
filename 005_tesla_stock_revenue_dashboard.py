@@ -1,21 +1,32 @@
 import yfinance as yf
-import requests
-from bs4 import BeautifulSoup
-import pandas as pd
-import io
+import matplotlib.pyplot as plt
+
+def make_graph(stock_data, revenue_data=None):
+    # Plot stock prices
+    plt.figure(figsize=(10, 5))
+    plt.plot(stock_data.index, stock_data['Close'], label='Tesla (TSLA)')
+    plt.xlabel('Date')
+    plt.ylabel('Closing Price (USD)')
+    plt.title('Tesla Stock Prices')  # Provide a title for the graph
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    # Plot revenue data if available
+    if revenue_data:
+        plt.figure(figsize=(8, 5))
+        plt.bar(revenue_data.keys(), revenue_data.values(), color='blue')
+        plt.xlabel('Quarter')
+        plt.ylabel('Revenue (USD)')
+        plt.title('Tesla Revenue')
+        plt.grid(axis='y')
+        plt.show()
+    else:
+        print("Revenue data not available.")
+
+# Fetch historical stock data for Tesla (TSLA)
 tsla = yf.Ticker("TSLA")
 tsla_data = tsla.history(period="1y")
-print("Tesla Stock Data:")
-print(tsla_data.head())
-revenue_url = 'https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0220EN-SkillsNetwork/labs/project/revenue.htm'
-response = requests.get(revenue_url)
-if response.status_code == 200:
-    soup = BeautifulSoup(response.text, 'html.parser')
-    revenue_table = soup.find('table')
-    # Convert revenue table to DataFrame
-    revenue_df = pd.read_html(io.StringIO(str(revenue_table)))[0]
-    # Display revenue data
-    print("\nRevenue Data:")
-    print(revenue_df)
-else:
-    print("Failed to fetch revenue data. Status code:", response.status_code)
+
+# Use make_graph function to plot Tesla stock data
+make_graph(tsla_data)
